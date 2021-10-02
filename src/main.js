@@ -4,6 +4,7 @@ import { DefaultApolloClient } from '@vue/apollo-composable'
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
+import '@/assets/main.scss'
 
 // HTTP connection to the API
 const httpLink = createHttpLink({

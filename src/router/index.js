@@ -1,19 +1,43 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import Welcome from '../views/Welcome.vue'
+
+const getUser = () => new Promise(resolve => resolve({ authenticated: true }))
+
+const enforceAuth = async (to, from, next) => {
+	const { authenticated } = await getUser()
+
+	if (!authenticated) {
+		return next('/')
+	}
+
+	next()
+}
 
 const routes = [
 	{
 		path: '/',
-		name: 'Home',
-		component: Home
+		name: 'Welcome',
+		component: Welcome,
+		beforeEnter: async (to, from, next) => {
+			const { authenticated } = await getUser()
+
+			if (authenticated) {
+				return next('/home')
+			}
+
+			next()
+		}
 	},
 	{
-		path: '/about',
-		name: 'About',
-		// route level code-splitting
-		// this generates a separate chunk (about.[hash].js) for this route
-		// which is lazy-loaded when the route is visited.
-		component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+		path: '/login',
+		name: 'Login',
+		component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+	},
+	{
+		path: '/home',
+		name: 'Home',
+		component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue'),
+		beforeEnter: enforceAuth,
 	}
 ]
 
