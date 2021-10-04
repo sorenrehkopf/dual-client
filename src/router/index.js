@@ -1,13 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Welcome from '../views/Welcome.vue'
-
-const getUser = () => new Promise(resolve => resolve({ authenticated: true }))
+import apolloClient from '@/apollo/client'
+import getUserQuery from '@/apollo/queries/getUser'
+import Welcome from '@/views/Welcome.vue'
 
 const enforceAuth = async (to, from, next) => {
-	const { authenticated } = await getUser()
+	const { authenticated } = await apolloClient.query({ query: getUserQuery })
 
 	if (!authenticated) {
 		return next('/')
+	}
+
+	next()
+}
+
+const redirectAuthed = async (to, from, next) => {
+	const { authenticated } = await apolloClient.query({ query: getUserQuery })
+
+	if (authenticated) {
+		return next('/home')
 	}
 
 	next()
@@ -18,20 +28,13 @@ const routes = [
 		path: '/',
 		name: 'Welcome',
 		component: Welcome,
-		beforeEnter: async (to, from, next) => {
-			const { authenticated } = await getUser()
-
-			if (authenticated) {
-				return next('/home')
-			}
-
-			next()
-		}
+		beforeEnter: redirectAuthed,
 	},
 	{
 		path: '/login',
 		name: 'Login',
 		component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+		beforeEnter: redirectAuthed,
 	},
 	{
 		path: '/home',
