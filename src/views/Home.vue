@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
+  <section class="section">
     <p class="title">Welcome user!</p>
     <RouterLink to="/">Signout</RouterLink>
-  </div>
+  </section>
 </template>
 
 <script>

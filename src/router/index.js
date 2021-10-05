@@ -5,7 +5,6 @@ import Welcome from '@/views/Welcome.vue'
 
 const enforceAuth = async (to, from, next) => {
 	const { data: { user: { authenticated } } } = await apolloClient.query({ query: getUserQuery })
-	console.log('enforcing')
 	if (!authenticated) {
 		return next('/')
 	}
@@ -15,7 +14,6 @@ const enforceAuth = async (to, from, next) => {
 
 const redirectAuthed = async (to, from, next) => {
 	const { data: { user: { authenticated } } } = await apolloClient.query({ query: getUserQuery })
-	console.log('redirecting')
 
 	if (authenticated) {
 		return next('/home')
@@ -35,6 +33,12 @@ const routes = [
 		path: '/login',
 		name: 'Login',
 		component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+		beforeEnter: redirectAuthed,
+	},
+	{
+		path: '/signup',
+		name: 'Signup',
+		component: () => import(/* webpackChunkName: "signup" */ '../views/Signup.vue'),
 		beforeEnter: redirectAuthed,
 	},
 	{

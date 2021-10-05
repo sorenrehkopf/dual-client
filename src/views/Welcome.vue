@@ -1,11 +1,11 @@
 <template>
 	<div class="container is-fluid">
-		<section class="hero">
+		<section class="section">
 			<div class="hero-body">
 				<p class="title mb-3">Welcome to Dual!</p>
 				<p>
 					<RouterLink to="/login">Login</RouterLink> |
-					<RouterLink to="/login">Signup</RouterLink>
+					<RouterLink to="/signup">Signup</RouterLink>
 				</p>
 			</div>
 		</section>
