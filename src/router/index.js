@@ -4,7 +4,7 @@ import getUserQuery from '@/apollo/queries/getUser'
 import Welcome from '@/views/Welcome.vue'
 
 const enforceAuth = async (to, from, next) => {
-	const { data: { user: { authenticated } } } = await apolloClient.query({ query: getUserQuery })
+	const { data: { currentUser: { authenticated } } } = await apolloClient.query({ query: getUserQuery })
 	if (!authenticated) {
 		return next('/')
 	}
@@ -13,7 +13,7 @@ const enforceAuth = async (to, from, next) => {
 }
 
 const redirectAuthed = async (to, from, next) => {
-	const { data: { user: { authenticated } } } = await apolloClient.query({ query: getUserQuery })
+	const { data: { currentUser: { authenticated } } } = await apolloClient.query({ query: getUserQuery })
 
 	if (authenticated) {
 		return next('/home')

@@ -5,6 +5,7 @@ export default gql`
 		signup (name: $name, email: $email, password: $password) {
 			authenticated
 			name
+			email
 		}
 	}
 `

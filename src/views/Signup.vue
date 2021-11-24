@@ -2,7 +2,10 @@
 	<section class="section">
 		<p class="title">Signup!</p>
 
-		<section class="container is-fluid is-flex is-justify-content-center is-flex-direction-column is-align-items-center">
+		<form
+			@submit="handleSubmit"
+			class="container is-fluid is-flex is-justify-content-center is-flex-direction-column is-align-items-center"
+		>
 			<div class="field">
 				<label class="label">Name</label>
 				<div class="control has-icons-left has-icons-right">
@@ -43,21 +46,12 @@
 				</div>
 			</div>
 
-			<div class="field">
-				<div class="control">
-					<label class="checkbox">
-						<input type="checkbox" v-model="tnc">
-						I agree to the <a href="#">terms and conditions</a>
-					</label>
-				</div>
-			</div>
-
 			<div class="field is-grouped">
 				<div class="control is-fullwidth">
-					<button class="button is-link" @click="() => signup({ name, email, password })">Submit</button>
+					<button class="button is-link">Submit</button>
 				</div>
 			</div>
-		</section>
+		</form>
 	</section>
 </template>
 
@@ -80,6 +74,17 @@ export default {
 		const { mutate: signup } = useMutation(signupMutation)
 
 		return { signup }
+	},
+
+	methods: {
+		handleSubmit: function (e) {
+			const { name, email, password, signup } = this
+			console.log(e)
+			e.preventDefault()
+			signup({ name, email, password })
+
+			return false;
+		}
 	}
 }
 </script>
