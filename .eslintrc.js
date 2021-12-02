@@ -16,6 +16,7 @@ module.exports = {
 		'comma-dangle': 'off',
 		'no-tabs': 'off',
 		'extrasemicolon': 'off',
+		'handle-callback-err': 'off',
 		indent: ['error', 'tab'],
 	},
 	overrides: [

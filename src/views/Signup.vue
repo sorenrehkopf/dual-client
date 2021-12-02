@@ -51,6 +51,10 @@
 					<button class="button is-link">Submit</button>
 				</div>
 			</div>
+
+			<div v-if="showErrorNotification">
+				something went wrong yo!
+			</div>
 		</form>
 	</section>
 </template>
@@ -68,6 +72,7 @@ export default {
 		password: '',
 		tnc: false,
 		emailIsInvalid: false,
+		showErrorNotification: false
 	}),
 
 	setup: () => {
@@ -77,13 +82,20 @@ export default {
 	},
 
 	methods: {
-		handleSubmit: function (e) {
+		handleSubmit: async function (e) {
 			const { name, email, password, signup } = this
-			console.log(e)
+
 			e.preventDefault()
 			signup({ name, email, password })
+				.then(({ data: { signup: { token } } }) => {
+					localStorage.setItem('authToken', token)
+					this.$router.push('Home')
+				})
+				.catch(error => {
+					this.showErrorNotification = true
+				})
 
-			return false;
+			return false
 		}
 	}
 }
