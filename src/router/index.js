@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import apolloClient from '@/apollo/client'
-import getUserQuery from '@/apollo/queries/getUser'
+import getCurrentUser from '@/apollo/queries/getCurrentUser'
 import Welcome from '@/views/Welcome.vue'
 
 const enforceAuth = async (to, from, next) => {
-	const { data: { currentUser } } = await apolloClient.query({ query: getUserQuery })
+	const { data: { currentUser: { authenticated } } } = await apolloClient.query({ query: getCurrentUser })
 
-	if (!currentUser) {
+	if (!authenticated) {
 		return next('/')
 	}
 
@@ -14,9 +14,9 @@ const enforceAuth = async (to, from, next) => {
 }
 
 const redirectAuthed = async (to, from, next) => {
-	const { data: { currentUser } } = await apolloClient.query({ query: getUserQuery })
+	const { data: { currentUser: { authenticated } } } = await apolloClient.query({ query: getCurrentUser })
 
-	if (currentUser) {
+	if (authenticated) {
 		return next('/home')
 	}
 
