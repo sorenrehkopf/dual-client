@@ -15,7 +15,7 @@ const enforceAuth = async (to, from, next) => {
 
 const redirectAuthed = async (to, from, next) => {
 	const { data: { currentUser: { authenticated } } } = await apolloClient.query({ query: getCurrentUser })
-
+	console.log('done it!')
 	if (authenticated) {
 		return next('/home')
 	}

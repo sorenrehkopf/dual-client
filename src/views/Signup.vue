@@ -61,6 +61,7 @@
 
 <script type="text/javascript">
 import { useMutation } from '@vue/apollo-composable'
+import apolloClient from '@/apollo/client'
 import signupMutation from '@/apollo/mutations/signup'
 
 export default {
@@ -89,6 +90,7 @@ export default {
 			signup({ name, email, password })
 				.then(({ data: { signup: { token } } }) => {
 					localStorage.setItem('authToken', token)
+					apolloClient.clearStore()
 					this.$router.push('Home')
 				})
 				.catch(error => {
