@@ -1,1 +1,12 @@
-@import '~bulma'
+@import "~bulma/sass/utilities/initial-variables";
+@import "~bulma/sass/utilities/functions";
+@import './palette';
+
+$radius: 2px;
+
+@import '~bulma';
+
+.single-page-wrapper {
+	height: 100vh;
+	background-color: $dark;
+}
