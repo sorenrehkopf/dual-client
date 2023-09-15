@@ -13,8 +13,7 @@ export default {
 	},
 	methods: {
 		async createMap () {
-			console.log('the token', process.env.MAPBOX_TOKEN)
-			mapboxgl.accessToken = process.env.MAPBOX_TOKEN
+			mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN
 
 			this.map = new mapboxgl.Map({
 				container: 'map',
@@ -26,4 +25,9 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+	#app {
+		width: 500px;
+		height: 400px;
+	}
+</style>
