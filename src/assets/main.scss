@@ -1,5 +1,6 @@
 @import "~bulma/sass/utilities/initial-variables";
 @import "~bulma/sass/utilities/functions";
+@import "~bulma/sass/components/navbar";
 @import './palette';
 
 $radius: 2px;
@@ -8,5 +9,5 @@ $radius: 2px;
 
 .single-page-wrapper {
 	height: 100vh;
-	background-color: $dark;
+	// background-color: $dark;
 }

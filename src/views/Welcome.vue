@@ -1,21 +1,14 @@
 <template>
-	<div class="container is-fluid 	single-page-wrapper">
-		<section class="section">
-			<div class="hero-body">
-				<span class="logo has-text-success">
-					D.C
-				</span>
-			</div>
-		</section>
-
-		<section>
-			<MapBox />
-		</section>
-
-		<section>
+	<div class="single-page-wrapper is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
+		<div class="navbar has-background-dark is-width-100">
 			<RouterLink to="/login" class="button mr-4">Login</RouterLink>
 			<RouterLink to="/signup" class="button">Signup</RouterLink>
-		</section>
+		</div>
+
+		<div class="is-flex-grow-1">
+			<MapBox />
+		</div>
+
 	</div>
 </template>
 
@@ -31,7 +24,7 @@ export default {
 </script>
 
 <style type="text/scss">
-.logo {
-	font-size: 6rem;
-}
+	.navbar {
+		width: 100vh;
+	}
 </style>

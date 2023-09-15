@@ -1,8 +1,9 @@
 <template>
-  <div id="map"></div>
+	<div id="map"></div>
 </template>
 
 <script>
+import 'mapbox-gl/dist/mapbox-gl.css'
 import mapboxgl from 'mapbox-gl'
 
 export default {
@@ -26,8 +27,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-	#app {
-		width: 500px;
-		height: 400px;
+	#map {
+		width: 100vw;
+		height: 94vh;
 	}
 </style>
