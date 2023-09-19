@@ -5,15 +5,8 @@
 <script>
 import 'mapbox-gl/dist/mapbox-gl.css'
 import mapboxgl from 'mapbox-gl'
-
-const markers = [
-	{
-		lat: 47.6120157,
-		lon: -122.305772,
-		title: 'A thing!',
-		description: 'A description of the thing!',
-	}
-]
+import apolloClient from '@/apollo/client'
+import getResources from '@/apollo/queries/getResources'
 
 export default {
 	name: 'MapBox',
@@ -37,6 +30,10 @@ export default {
 				}
 			)
 
+			const { data: { resources } } = await apolloClient.query({ query: getResources })
+
+			console.log('the resources!!', resources)
+
 			this.map = new mapboxgl.Map({
 				container: 'map',
 				style: 'mapbox://styles/mapbox/streets-v11',
@@ -44,7 +41,7 @@ export default {
 				zoom: 14
 			})
 
-			markers.forEach(({ lat, lon, title, description }) => {
+			resources.forEach(({ lat, lon, name, description }) => {
 				const markerEl = document.createElement('div')
 				markerEl.classList.add('marker')
 
@@ -53,7 +50,7 @@ export default {
 					.setPopup(
 						new mapboxgl.Popup({ offset: 25 })
 							.setHTML(
-								`<h3>${title}</h3><p>${description}</p>`
+								`<h3>${name}</h3><p>${description}</p>`
 							)
 					)
 					.addTo(this.map)
