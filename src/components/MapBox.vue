@@ -1,5 +1,6 @@
 <template>
 	<div id="map"></div>
+	<div v-if="enableAdd" id="add-dialog">yooooooooooooo {{enableAdd}}</div>
 </template>
 
 <script>
@@ -10,7 +11,9 @@ import getResources from '@/apollo/queries/getResources'
 
 export default {
 	name: 'MapBox',
-	props: {},
+	props: {
+		enableAdd: Boolean
+	},
 	mounted () {
 		this.createMap()
 	},
@@ -72,6 +75,12 @@ export default {
 			border-radius: 50%;
 			cursor: pointer;
 		}
+	}
+
+	#add-dialog {
+		position: absolute;
+		top: 10vh;
+		left: 10vw;
 	}
 
 </style>
