@@ -5,9 +5,8 @@
 		</div>
 
 		<div class="is-flex-grow-1">
-			<MapBox :enableAdd="addingResource" />
+			<MapBox :enableAdd="addingResource" :disableAdd="() => { addingResource = false }" />
 		</div>
-
 	</div>
 </template>
 
@@ -21,7 +20,7 @@ export default {
 	},
 	data () {
 		return {
-			addingResource: false
+			addingResource: true
 		}
 	},
 	methods: {
