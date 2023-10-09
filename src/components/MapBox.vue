@@ -61,7 +61,7 @@ export default {
 		async createMap () {
 			mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN
 
-			const { coords: { latitude = 0, longitude = 0 } = {} } = await new Promise(
+			const { coords: { latitude: lat = 0, longitude: lon = 0 } = {} } = await new Promise(
 				(resolve) => {
 					navigator.geolocation.getCurrentPosition(
 						resolve,
@@ -73,14 +73,17 @@ export default {
 				}
 			)
 
-			const { data: { resources } } = await apolloClient.query({ query: getResources })
+			const { data: { resources } } = await apolloClient.query({
+				query: getResources,
+				variables: { lat, lon }
+			})
 
 			console.log('the resources!!', resources)
 
 			this.map = new mapboxgl.Map({
 				container: 'map',
 				style: 'mapbox://styles/mapbox/streets-v11',
-				center: [longitude, latitude],
+				center: [lon, lat],
 				zoom: 14
 			})
 
