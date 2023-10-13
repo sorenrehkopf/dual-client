@@ -1,7 +1,7 @@
 <template>
 	<div class="single-page-wrapper is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
 		<div class="navbar has-background-dark is-width-100 is-flex is-justify-content-flex-end py-1 px-5">
-			<button class="button" @click="yo">
+			<button class="button" @click="() => {addingResource = !addingResource}">
 				{{addingResource ? 'Cancel' : 'Add Resource'}}
 			</button>
 		</div>
@@ -28,12 +28,6 @@ export default {
 			addingResource: false
 		}
 	},
-	methods: {
-		yo () {
-			console.log('woaaaah', this.addingResource)
-			this.addingResource = !this.addingResource
-		}
-	}
 }
 </script>
 

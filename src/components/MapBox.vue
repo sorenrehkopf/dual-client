@@ -26,6 +26,8 @@ export default {
 	data () {
 		return {
 			addCoords: { lat: 0, lon: 0 },
+			userCoords: { lat: 0, lon: 0 },
+			markers: [],
 		}
 	},
 	components: {
@@ -39,6 +41,22 @@ export default {
 			this.addMarker(newResource)
 			this.disableAdd()
 		},
+		async searchCurrentArea () {
+			const { lat, lon } = this.userCoords
+			const {
+				_ne: { lng: e, lat: n },
+				_sw: { lng: w, lat: s },
+			} = this.map.getBounds()
+
+			const { data: { resources } } = await apolloClient.query({
+				query: getResources,
+				variables: { lat, lon, bounds: { n, s, e, w } }
+			})
+
+			this.markers.forEach(m => m.remove())
+
+			resources.forEach(this.addMarker)
+		},
 		addMarker ({ name, description, lat, lon }) {
 			if (!this.map) {
 				console.error('Map not initialized yet!')
@@ -47,7 +65,7 @@ export default {
 			const markerEl = document.createElement('div')
 			markerEl.classList.add('marker')
 
-			new mapboxgl.Marker(markerEl)
+			const marker = new mapboxgl.Marker(markerEl)
 				.setLngLat([lon, lat])
 				.setPopup(
 					new mapboxgl.Popup({ offset: 25 })
@@ -56,6 +74,8 @@ export default {
 						)
 				)
 				.addTo(this.map)
+
+			this.markers.push(marker)
 		},
 
 		async createMap () {
@@ -73,6 +93,8 @@ export default {
 				}
 			)
 
+			this.userCoords = { lat, lon }
+
 			const { data: { resources } } = await apolloClient.query({
 				query: getResources,
 				variables: { lat, lon }
@@ -89,6 +111,7 @@ export default {
 
 			this.map.on('click', ({ lngLat: { lng: lon, lat } }) => {
 				this.addCoords = { lat, lon }
+				this.searchCurrentArea()
 			})
 
 			resources.forEach(this.addMarker)
