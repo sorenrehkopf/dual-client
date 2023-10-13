@@ -92,6 +92,22 @@ export default {
 			})
 
 			resources.forEach(this.addMarker)
+
+			const { minLat, minLon, maxLat, maxLon } = resources.reduce(
+				({ minLat, minLon, maxLat, maxLon }, { lat: rLat, lon: rLon }) => ({
+					minLat: Math.min(rLat, minLat),
+					minLon: Math.min(rLon, minLon),
+					maxLat: Math.max(rLat, maxLat),
+					maxLon: Math.max(rLon, maxLon),
+				}), {
+					minLat: lat,
+					minLon: lon,
+					maxLat: lat,
+					maxLon: lon,
+				}
+			)
+
+			this.map.fitBounds([maxLon, minLat, minLon, maxLat], { padding: 80 })
 		}
 	}
 }
