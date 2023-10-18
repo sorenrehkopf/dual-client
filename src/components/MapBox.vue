@@ -1,6 +1,15 @@
 <template>
 	<div id="map"></div>
 
+	<button
+		v-if="enableAreaSearch"
+		class="button"
+		id="area-search-button"
+		@click="searchCurrentArea"
+	>
+		Search This Area
+	</button>
+
 	<AddResourceDialog
 		v-if="enableAdd"
 		id="add-dialog"
@@ -21,11 +30,12 @@ export default {
 	name: 'MapBox',
 	props: {
 		enableAdd: Boolean,
-		disableAdd: Function
+		disableAdd: Function,
 	},
 	data () {
 		return {
 			addCoords: { lat: 0, lon: 0 },
+			enableAreaSearch: false,
 			userCoords: { lat: 0, lon: 0 },
 			markers: [],
 		}
@@ -33,14 +43,16 @@ export default {
 	components: {
 		AddResourceDialog,
 	},
-	mounted () {
-		this.createMap()
+	async mounted () {
+		await this.setUserCoords()
+		await this.createMap()
 	},
 	methods: {
 		handleResourceAdd (newResource) {
 			this.addMarker(newResource)
 			this.disableAdd()
 		},
+
 		async searchCurrentArea () {
 			const { lat, lon } = this.userCoords
 			const {
@@ -54,9 +66,11 @@ export default {
 			})
 
 			this.markers.forEach(m => m.remove())
+			this.enableAreaSearch = false
 
 			resources.forEach(this.addMarker)
 		},
+
 		addMarker ({ name, description, lat, lon }) {
 			if (!this.map) {
 				console.error('Map not initialized yet!')
@@ -78,9 +92,7 @@ export default {
 			this.markers.push(marker)
 		},
 
-		async createMap () {
-			mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN
-
+		async setUserCoords () {
 			const { coords: { latitude: lat = 0, longitude: lon = 0 } = {} } = await new Promise(
 				(resolve) => {
 					navigator.geolocation.getCurrentPosition(
@@ -94,6 +106,10 @@ export default {
 			)
 
 			this.userCoords = { lat, lon }
+		},
+
+		async createMap () {
+			const { userCoords: { lat, lon } } = this
 
 			const { data: { resources } } = await apolloClient.query({
 				query: getResources,
@@ -102,17 +118,21 @@ export default {
 
 			console.log('the resources!!', resources)
 
+			mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN
+
 			this.map = new mapboxgl.Map({
 				container: 'map',
 				style: 'mapbox://styles/mapbox/streets-v11',
+				scrollZoom: true,
 				center: [lon, lat],
 				zoom: 14
 			})
 
 			this.map.on('click', ({ lngLat: { lng: lon, lat } }) => {
 				this.addCoords = { lat, lon }
-				this.searchCurrentArea()
 			})
+			this.map.on('dragend', () => { this.enableAreaSearch = true })
+			this.map.on('wheel', () => { this.enableAreaSearch = true })
 
 			resources.forEach(this.addMarker)
 
@@ -154,6 +174,12 @@ export default {
 		position: absolute;
 		top: 10vh;
 		left: 10vw;
+	}
+
+	#area-search-button {
+		position: absolute;
+		bottom: 5vh;
+		left: 40vw;
 	}
 
 </style>
