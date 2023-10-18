@@ -1,6 +1,6 @@
 <template>
 	<div class="single-page-wrapper is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
-		<div class="navbar has-background-dark is-width-100 is-flex is-justify-content-flex-end py-1 px-5">
+		<div class="navbar has-background-dark is-width-100 is-flex is-justify-content-flex-end py-1">
 			<button class="button" @click="() => {addingResource = !addingResource}">
 				{{addingResource ? 'Cancel' : 'Add Resource'}}
 			</button>
@@ -34,5 +34,6 @@ export default {
 <style type="text/scss">
 	.navbar {
 		width: 100vh;
+		padding-right: 10vh;
 	}
 </style>

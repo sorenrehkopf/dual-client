@@ -10,6 +10,11 @@
 		Search This Area
 	</button>
 
+	<ResourceFilters
+		v-if="!enableAdd"
+		id="mapbox-resource-filters"
+	/>
+
 	<AddResourceDialog
 		v-if="enableAdd"
 		id="add-dialog"
@@ -25,13 +30,16 @@ import mapboxgl from 'mapbox-gl'
 import apolloClient from '@/apollo/client'
 import getResources from '@/apollo/queries/getResources'
 import AddResourceDialog from '@/components/AddResourceDialog'
+import ResourceFilters from '@/components/ResourceFilters'
 
 export default {
 	name: 'MapBox',
+
 	props: {
 		enableAdd: Boolean,
 		disableAdd: Function,
 	},
+
 	data () {
 		return {
 			addCoords: { lat: 0, lon: 0 },
@@ -40,13 +48,17 @@ export default {
 			markers: [],
 		}
 	},
+
 	components: {
 		AddResourceDialog,
+		ResourceFilters,
 	},
+
 	async mounted () {
 		await this.setUserCoords()
 		await this.createMap()
 	},
+
 	methods: {
 		handleResourceAdd (newResource) {
 			this.addMarker(newResource)
@@ -176,10 +188,17 @@ export default {
 		left: 10vw;
 	}
 
+	#mapbox-resource-filters {
+		position: absolute;
+		top: 10vh;
+		left: 10vw;
+	}
+
 	#area-search-button {
 		position: absolute;
 		bottom: 5vh;
 		left: 40vw;
+		opacity: .7;
 	}
 
 </style>

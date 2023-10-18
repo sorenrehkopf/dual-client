@@ -1,5 +1,5 @@
 <template>
-	<div id="add-dialog" class="has-background-white p-3">
+	<div class="has-background-white p-3">
 		<div class="field">
 			<label class="label">Name</label>
 			<div class="control">
@@ -41,7 +41,7 @@ import { useMutation } from '@vue/apollo-composable'
 import addResourceMutation from '@/apollo/mutations/addResource'
 
 export default {
-	name: 'MapBox',
+	name: 'AddResourceDialog',
 	props: {
 		disableAdd: Function,
 		handleResourceAdd: Function,
@@ -84,10 +84,5 @@ export default {
 </script>
 
 <style lang="scss">
-	#add-dialog {
-		position: absolute;
-		top: 10vh;
-		left: 10vw;
-	}
 
 </style>
