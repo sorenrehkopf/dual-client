@@ -1,6 +1,6 @@
 <template>
 	<div class="has-background-white p-3">
-		<span v-if="!open" class="icon  is-clickable" @click="open = true">
+		<span v-if="!open" class="icon  is-clickable" @click="toggleFilters">
 			<i class="fa-solid fa-magnifying-glass"></i>
 		</span>
 
@@ -9,7 +9,7 @@
 				<label class="label">Tags:</label>
 
 				<span
-					v-for="tag in selectedTags"
+					v-for="tag in filters.tags"
 					:key="tag"
 					class="tag mr-2"
 				>
@@ -30,6 +30,26 @@
 					</select>
 				</div>
 			</div>
+
+			<div class="field is-grouped">
+				<div class="control">
+					<button
+						class="button is-primary"
+						@click="handleSearch"
+					>
+						Search
+					</button>
+				</div>
+
+				<div class="control">
+					<button
+						class="button is-light"
+						@click="toggleFilters"
+					>
+						Cancel
+					</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -37,17 +57,22 @@
 <script>
 import apolloClient from '@/apollo/client'
 import getTags from '@/apollo/queries/getTags'
+import pickBy from 'lodash/pickBy.js'
 
 export default {
 	name: 'ResourceFilters',
 	props: {
-
+		open: Boolean,
+		search: Function,
+		toggleFilters: Function,
+		filters: Object,
+		setFilters: Function,
 	},
+
 	data () {
 		return {
 			selectedTags: [],
 			availableTags: [],
-			open: true,
 		}
 	},
 
@@ -56,20 +81,33 @@ export default {
 			query: getTags,
 		})
 
-		console.log('the tags!!!!!!', tags)
-
 		this.availableTags = tags.map(({ name }) => name)
 	},
 
 	methods: {
 		selectTag ({ target: { value } }) {
-			this.selectedTags.push(value)
+			const { tags = [] } = this.filters
+			const newTags = [...tags, value]
+
+			this.setFilters({ tags: newTags })
 			this.availableTags = this.availableTags.filter(tag => tag !== value)
 		},
 
 		deselectTag (value) {
+			const { tags } = this.filters
+
 			this.availableTags.push(value)
-			this.selectedTags = this.selectedTags.filter(tag => tag !== value)
+			const newTags = tags.filter(tag => tag !== value)
+
+			this.setFilters({
+				tags: newTags.length ? newTags : undefined
+			})
+		},
+
+		handleSearch () {
+			const { selectedTags: tags } = this
+
+			this.search({ filters: pickBy({ tags: tags.length && tags }) })
 		}
 	}
 }
@@ -77,6 +115,6 @@ export default {
 
 <style lang="scss" scoped >
 	.filters-form {
-		min-width: 30vh;
+		max-width: 60vh;
 	}
 </style>

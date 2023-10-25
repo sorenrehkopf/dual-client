@@ -19,6 +19,7 @@
     "core-js": "^3.6.5",
     "graphql": "^15.6.0",
     "graphql-tag": "^2.12.5",
+    "lodash": "^4.17.21",
     "mapbox-gl": "^2.15.0",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",

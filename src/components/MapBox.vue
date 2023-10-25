@@ -5,7 +5,7 @@
 		v-if="enableAreaSearch"
 		class="button"
 		id="area-search-button"
-		@click="searchCurrentArea"
+		@click="search"
 	>
 		Search This Area
 	</button>
@@ -13,6 +13,11 @@
 	<ResourceFilters
 		v-if="!enableAdd"
 		id="mapbox-resource-filters"
+		:open="showFilters"
+		:toggleFilters="() => showFilters = !showFilters"
+		:search="search"
+		:filters="filters"
+		:setFilters="setFilters"
 	/>
 
 	<AddResourceDialog
@@ -44,6 +49,8 @@ export default {
 		return {
 			addCoords: { lat: 0, lon: 0 },
 			enableAreaSearch: false,
+			showFilters: false,
+			filters: {},
 			userCoords: { lat: 0, lon: 0 },
 			markers: [],
 		}
@@ -60,25 +67,36 @@ export default {
 	},
 
 	methods: {
+		setFilters (changes, clear = false) {
+			Object.entries(changes).forEach(([key, value]) => {
+				this.filters[key] = value
+			})
+
+			if (clear) {
+				this.filters = {}
+			}
+		},
+
 		handleResourceAdd (newResource) {
 			this.addMarker(newResource)
 			this.disableAdd()
 		},
 
-		async searchCurrentArea () {
-			const { lat, lon } = this.userCoords
+		async search () {
 			const {
 				_ne: { lng: e, lat: n },
 				_sw: { lng: w, lat: s },
 			} = this.map.getBounds()
-
+			const { filters, userCoords: { lat, lon } } = this
+			console.log('the filters!!!', filters)
 			const { data: { resources } } = await apolloClient.query({
 				query: getResources,
-				variables: { lat, lon, bounds: { n, s, e, w } }
+				variables: { lat, lon, bounds: { n, s, e, w }, ...filters }
 			})
 
 			this.markers.forEach(m => m.remove())
 			this.enableAreaSearch = false
+			this.showFilters = false
 
 			resources.forEach(this.addMarker)
 		},
