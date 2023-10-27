@@ -31,6 +31,19 @@
 				</div>
 			</div>
 
+			<div class="field is-horizontal is-flex">
+				<label class="label">Open:</label>
+
+				<div class="control">
+					<button
+						:class="`button is-info ${filters.open ? '' : 'is-light'}`"
+						@click="() => setFilters({ open: filters.open ? undefined : [Date().toString()] })"
+					>
+						Open now
+					</button>
+				</div>
+			</div>
+
 			<div class="field is-grouped">
 				<div class="control">
 					<button

@@ -75,6 +75,8 @@ export default {
 			if (clear) {
 				this.filters = {}
 			}
+
+			console.log('the filters!!!!', this.filters)
 		},
 
 		handleResourceAdd (newResource) {
