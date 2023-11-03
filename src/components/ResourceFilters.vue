@@ -32,14 +32,29 @@
 			</div>
 
 			<div class="field is-horizontal is-flex">
-				<label class="label">Open:</label>
+				<label class="label">Open at:</label>
 
 				<div class="control">
+					<input
+						class="mr-2"
+						type="datetime-local"
+						:min="getNowFormatted()"
+						:value="filters.open"
+						@change="({ target: { value } }) => setFilters({ open: value })"
+					/>
+
 					<button
-						:class="`button is-info ${filters.open ? '' : 'is-light'}`"
-						@click="() => setFilters({ open: filters.open ? undefined : [Date().toString()] })"
+						class="button is-info is-small is-light mr-2"
+						@click="() => setFilters({ open: getNowFormatted() })"
 					>
-						Open now
+						Now
+					</button>
+
+					<button
+						class="button is-small"
+						@click="() => setFilters({ open: undefined })"
+					>
+						Clear
 					</button>
 				</div>
 			</div>
@@ -98,6 +113,21 @@ export default {
 	},
 
 	methods: {
+		getNowFormatted () {
+			const date = new Date()
+			const dateFormatted = [
+				date.getFullYear(),
+				date.getMonth() + 1,
+				date.getDate(),
+			].map(n => (n < 10 ? `0${n}` : n)).join('-')
+			const timeFormatted =
+				[date.getHours(), date.getMinutes()]
+					.map(n => (n < 10 ? `0${n}` : n))
+					.join(':')
+
+			return `${dateFormatted}T${timeFormatted}`
+		},
+
 		selectTag ({ target: { value } }) {
 			const { tags = [] } = this.filters
 			const newTags = [...tags, value]
