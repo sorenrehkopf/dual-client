@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { store } from '@/components/MapBox' // eslint-disable-line
+import { store } from '../store'
 
 export default {
 	name: 'ActionButtons',

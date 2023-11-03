@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { store } from '@/components/MapBox' // eslint-disable-line
+import { store } from '../store'
 import { useMutation } from '@vue/apollo-composable'
 import addResourceMutation from '@/apollo/mutations/addResource'
 

@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { store } from '@/components/MapBox' // eslint-disable-line
+import { store } from '../store'
 import apolloClient from '@/apollo/client'
 import getTags from '@/apollo/queries/getTags'
 import pickBy from 'lodash/pickBy.js'

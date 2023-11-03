@@ -29,21 +29,14 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { store } from './store'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import mapboxgl from 'mapbox-gl'
 import apolloClient from '@/apollo/client'
 import getResources from '@/apollo/queries/getResources'
-import AddResourceDialog from '@/components/AddResourceDialog'
-import ActionButtons from '@/components/ActionButtons'
-import ResourceFilters from '@/components/ResourceFilters'
-
-export const store = reactive({
-	showFilters: false,
-	showAddDialog: false,
-	addCoords: { lat: 0, lon: 0 },
-	filters: {},
-})
+import AddResourceDialog from './components/AddResourceDialog'
+import ActionButtons from './components/ActionButtons'
+import ResourceFilters from './components/ResourceFilters'
 
 export default {
 	name: 'MapBox',

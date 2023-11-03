@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import apolloClient from '@/apollo/client'
 import getCurrentUser from '@/apollo/queries/getCurrentUser'
-import Welcome from '@/views/Welcome.vue'
 
 const enforceAuth = async (to, from, next) => {
 	const {
@@ -34,9 +33,14 @@ const redirectAuthed = async (to, from, next) => {
 const routes = [
 	{
 		path: '/',
-		name: 'Welcome',
-		component: Welcome,
-		beforeEnter: redirectAuthed,
+		name: 'Home',
+		component: () => import(/* webpackChunkName: "home" */ '../views/Home/index.vue'),
+	},
+	{
+		path: '/account',
+		name: 'Account',
+		component: () => import(/* webpackChunkName: "account" */ '../views/Account.vue'),
+		beforeEnter: () => enforceAuth,
 	},
 	{
 		path: '/login',
@@ -51,12 +55,6 @@ const routes = [
 		component: () =>
 			import(/* webpackChunkName: "signup" */ '../views/Signup.vue'),
 		beforeEnter: redirectAuthed,
-	},
-	{
-		path: '/home',
-		name: 'Home',
-		component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue'),
-		beforeEnter: enforceAuth,
 	},
 ]
 
