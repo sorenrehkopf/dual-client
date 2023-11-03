@@ -1,18 +1,5 @@
 <template>
-	<div class="single-page-wrapper is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
-		<div class="navbar has-background-dark is-width-100 is-flex is-justify-content-flex-end py-1">
-			<button class="button" @click="() => {addingResource = !addingResource}">
-				{{addingResource ? 'Cancel' : 'Add Resource'}}
-			</button>
-		</div>
-
-		<div class="is-flex-grow-1">
-			<MapBox
-				:enableAdd="addingResource"
-				:disableAdd="() => { addingResource = false }"
-			/>
-		</div>
-	</div>
+	<MapBox />
 </template>
 
 <script type="text/javascript">
@@ -22,11 +9,6 @@ export default {
 	name: 'Welcome',
 	components: {
 		MapBox,
-	},
-	data () {
-		return {
-			addingResource: false
-		}
 	},
 }
 </script>

@@ -1,6 +1,23 @@
 <template>
 	<div id="map"></div>
 
+	<ActionButtons
+		class="mapbox-standard-overlay"
+		v-if="!store.showFilters && !store.showAddDialog"
+	/>
+
+	<ResourceFilters
+		v-if="store.showFilters"
+		class="mapbox-standard-overlay"
+		:search="search"
+	/>
+
+	<AddResourceDialog
+		v-if="store.showAddDialog"
+		class="mapbox-standard-overlay has-background-white p-3"
+		:handleResourceAdd="handleResourceAdd"
+	/>
+
 	<button
 		v-if="enableAreaSearch"
 		class="button"
@@ -9,56 +26,41 @@
 	>
 		Search This Area
 	</button>
-
-	<ResourceFilters
-		v-if="!enableAdd"
-		id="mapbox-resource-filters"
-		:open="showFilters"
-		:toggleFilters="() => showFilters = !showFilters"
-		:search="search"
-		:filters="filters"
-		:setFilters="setFilters"
-	/>
-
-	<AddResourceDialog
-		v-if="enableAdd"
-		id="add-dialog"
-		class="has-background-white p-3"
-		:addCoords="addCoords"
-		:handleResourceAdd="handleResourceAdd"
-	/>
 </template>
 
 <script>
+import { reactive } from 'vue'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import mapboxgl from 'mapbox-gl'
 import apolloClient from '@/apollo/client'
 import getResources from '@/apollo/queries/getResources'
 import AddResourceDialog from '@/components/AddResourceDialog'
+import ActionButtons from '@/components/ActionButtons'
 import ResourceFilters from '@/components/ResourceFilters'
+
+export const store = reactive({
+	showFilters: false,
+	showAddDialog: false,
+	addCoords: { lat: 0, lon: 0 },
+	filters: {},
+})
 
 export default {
 	name: 'MapBox',
 
-	props: {
-		enableAdd: Boolean,
-		disableAdd: Function,
+	components: {
+		ActionButtons,
+		AddResourceDialog,
+		ResourceFilters,
 	},
 
 	data () {
 		return {
-			addCoords: { lat: 0, lon: 0 },
 			enableAreaSearch: false,
-			showFilters: false,
-			filters: {},
 			userCoords: { lat: 0, lon: 0 },
 			markers: [],
+			store,
 		}
-	},
-
-	components: {
-		AddResourceDialog,
-		ResourceFilters,
 	},
 
 	async mounted () {
@@ -67,21 +69,10 @@ export default {
 	},
 
 	methods: {
-		setFilters (changes, clear = false) {
-			Object.entries(changes).forEach(([key, value]) => {
-				this.filters[key] = value
-			})
-
-			if (clear) {
-				this.filters = {}
-			}
-
-			console.log('the filters!!!!', this.filters)
-		},
 
 		handleResourceAdd (newResource) {
 			this.addMarker(newResource)
-			this.disableAdd()
+			this.showAddDialog = false
 		},
 
 		async search () {
@@ -89,8 +80,8 @@ export default {
 				_ne: { lng: e, lat: n },
 				_sw: { lng: w, lat: s },
 			} = this.map.getBounds()
-			const { filters, userCoords: { lat, lon } } = this
-			console.log('the filters!!!', filters)
+			const { userCoords: { lat, lon }, store: { filters } } = this
+
 			const { data: { resources } } = await apolloClient.query({
 				query: getResources,
 				variables: { lat, lon, bounds: { n, s, e, w }, ...filters }
@@ -98,7 +89,7 @@ export default {
 
 			this.markers.forEach(m => m.remove())
 			this.enableAreaSearch = false
-			this.showFilters = false
+			store.showFilters = false
 
 			resources.forEach(this.addMarker)
 		},
@@ -148,8 +139,6 @@ export default {
 				variables: { lat, lon }
 			})
 
-			console.log('the resources!!', resources)
-
 			mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN
 
 			this.map = new mapboxgl.Map({
@@ -161,7 +150,7 @@ export default {
 			})
 
 			this.map.on('click', ({ lngLat: { lng: lon, lat } }) => {
-				this.addCoords = { lat, lon }
+				store.addCoords = { lat, lon }
 			})
 			this.map.on('dragend', () => { this.enableAreaSearch = true })
 			this.map.on('wheel', () => { this.enableAreaSearch = true })
@@ -191,7 +180,7 @@ export default {
 <style lang="scss">
 	#map {
 		width: 100vw;
-		height: 94vh;
+		height: 100vh;
 
 		.marker {
 			background: hotpink;
@@ -202,16 +191,10 @@ export default {
 		}
 	}
 
-	#add-dialog {
+	.mapbox-standard-overlay {
 		position: absolute;
-		top: 10vh;
-		left: 10vw;
-	}
-
-	#mapbox-resource-filters {
-		position: absolute;
-		top: 10vh;
-		left: 10vw;
+		top: 5vh;
+		left: 5vw;
 	}
 
 	#area-search-button {

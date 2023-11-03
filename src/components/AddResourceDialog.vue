@@ -10,7 +10,7 @@
 		<div class="field">
 			<label class="label">Coords</label>
 			<div class="control">
-				<input class="input" readonly type="text" placeholder="Click the map!" :value="`Lat: ${addCoords.lat}, Lon: ${addCoords.lon}`">
+				<input class="input" readonly type="text" placeholder="Click the map!" :value="`Lat: ${store.addCoords.lat}, Lon: ${store.addCoords.lon}`">
 			</div>
 		</div>
 
@@ -28,37 +28,57 @@
 			</div>
 		</div>
 
-		<div class="field">
+		<div class="field is-grouped">
 			<div class="control">
-				<button class="button is-primary" type="text" @click="handleAddResource">Add!</button>
+				<button
+					class="button is-primary mr-3"
+					type="text"
+					@click="handleAddResource"
+				>
+					Add
+				</button>
+			</div>
+
+			<div class="control">
+				<button
+					class="button"
+					type="text"
+					@click="store.showAddDialog = false"
+				>
+					Cancel
+				</button>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import { store } from '@/components/MapBox' // eslint-disable-line
 import { useMutation } from '@vue/apollo-composable'
 import addResourceMutation from '@/apollo/mutations/addResource'
 
 export default {
 	name: 'AddResourceDialog',
+
 	props: {
-		disableAdd: Function,
 		handleResourceAdd: Function,
-		addCoords: Object,
 	},
+
 	data () {
 		return {
 			name: '',
 			description: '',
 			address: '',
+			store,
 		}
 	},
+
 	setup: () => {
 		const { mutate: addResource } = useMutation(addResourceMutation)
 
 		return { addResource }
 	},
+
 	methods: {
 		async handleAddResource () {
 			const {
@@ -66,8 +86,8 @@ export default {
 				name,
 				description,
 				address,
-				addCoords: { lat, lon },
 				handleResourceAdd,
+				store: { addCoords: { lat, lon } },
 			} = this
 
 			addResource({ lat, lon, name, description, address })
