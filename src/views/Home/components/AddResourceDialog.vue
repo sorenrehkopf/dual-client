@@ -10,7 +10,7 @@
 		<div class="field">
 			<label class="label">Location</label>
 			<div class="control">
-				<span class="is-underlined" @click="showAddCoordsConfirm">
+				<span class="is-underlined" @click="setAddCoords">
 					<i class="fa-solid fa-location-crosshairs mr-2"></i>
 					<span v-if="store.addCoords.lat" class="mr-2">
 						{{`${store.addCoords.lat.toFixed(5)}, ${store.addCoords.lon.toFixed(5)}`}}
@@ -74,6 +74,7 @@ export default {
 
 	props: {
 		handleResourceAdd: Function,
+		setAddCoords: Function,
 	},
 
 	data () {
@@ -111,12 +112,6 @@ export default {
 					this.address = ''
 				})
 		},
-
-		showAddCoordsConfirm () {
-			store.addCoords = { lat: 0, lon: 0 }
-			store.showAddCoordsConfirm = true
-			store.showAddDialog = false
-		}
 	}
 }
 </script>

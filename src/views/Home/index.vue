@@ -16,6 +16,7 @@
 		v-if="store.showAddDialog"
 		class="mapbox-standard-overlay mapbox-overlay-fs has-background-white p-3"
 		:handleResourceAdd="handleResourceAdd"
+		:setAddCoords="setAddCoords"
 	/>
 
 	<button
@@ -48,7 +49,7 @@ import ActionButtons from './components/ActionButtons'
 import ResourceFilters from './components/ResourceFilters'
 
 export default {
-	name: 'MapBox',
+	name: 'Home',
 
 	components: {
 		ActionButtons,
@@ -61,6 +62,7 @@ export default {
 			enableAreaSearch: false,
 			userCoords: { lat: 0, lon: 0 },
 			markers: [],
+			addCoordsMarker: new mapboxgl.Marker({ scale: 1.3, color: 'black' }),
 			store,
 		}
 	},
@@ -101,10 +103,7 @@ export default {
 				console.error('Map not initialized yet!')
 			}
 
-			const markerEl = document.createElement('div')
-			markerEl.classList.add('marker')
-
-			const marker = new mapboxgl.Marker(markerEl)
+			const marker = new mapboxgl.Marker({ scale: 1.2 })
 				.setLngLat([lon, lat])
 				.setPopup(
 					new mapboxgl.Popup({ offset: 25 })
@@ -131,11 +130,24 @@ export default {
 			)
 
 			this.userCoords = { lat, lon }
+			store.addCoords = { lat, lon }
 		},
 
 		confirmAddCoords () {
 			store.showAddCoordsConfirm = false
 			store.showAddDialog = true
+			this.addCoordsMarker.remove()
+			this.markers.forEach(marker => marker.addTo(this.map))
+		},
+
+		setAddCoords () {
+			const { addCoords: { lon, lat } } = store
+
+			store.showAddCoordsConfirm = true
+			store.showAddDialog = false
+
+			this.markers.forEach(marker => marker.remove())
+			this.addCoordsMarker.setLngLat([lon, lat]).addTo(this.map)
 		},
 
 		async createMap () {
@@ -158,6 +170,7 @@ export default {
 
 			this.map.on('click', ({ lngLat: { lng: lon, lat } }) => {
 				store.addCoords = { lat, lon }
+				this.addCoordsMarker.setLngLat([lon, lat])
 			})
 			this.map.on('dragend', () => { this.enableAreaSearch = true })
 			this.map.on('wheel', () => { this.enableAreaSearch = true })
@@ -190,11 +203,8 @@ export default {
 		height: 100vh;
 
 		.marker {
-			background: hotpink;
 			width: 50px;
 			height: 50px;
-			border-radius: 50%;
-			cursor: pointer;
 		}
 	}
 
