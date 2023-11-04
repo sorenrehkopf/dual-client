@@ -1,7 +1,7 @@
 <template>
 	<div class="has-background-white p-3">
-		<div class="filters-form">
-			<div class="field is-horizontal is-flex">
+		<div class="filters-form has-text-left">
+			<div class="field">
 				<label class="label">Tags:</label>
 
 				<span
@@ -27,10 +27,10 @@
 				</div>
 			</div>
 
-			<div class="field is-horizontal is-flex">
+			<div class="field">
 				<label class="label">Open at:</label>
 
-				<div class="control">
+				<div class="control is-flex">
 					<input
 						class="mr-2"
 						type="datetime-local"
@@ -39,23 +39,25 @@
 						@change="({ target: { value } }) => store.filters.open = value"
 					/>
 
-					<button
-						class="button is-info is-small is-light mr-2"
-						@click="() => store.filters.open = getNowFormatted()"
-					>
-						Now
-					</button>
+					<div class="mt-2">
+						<button
+							class="button is-info is-small is-light mr-2"
+							@click="() => store.filters.open = getNowFormatted()"
+						>
+							Now
+						</button>
 
-					<button
-						class="button is-small"
-						@click="() => store.filters.open = undefined"
-					>
-						Clear
-					</button>
+						<button
+							class="button is-small"
+							@click="() => store.filters.open = undefined"
+						>
+							Clear
+						</button>
+					</div>
 				</div>
 			</div>
 
-			<div class="field is-grouped">
+			<div class="field is-grouped mt-5">
 				<div class="control">
 					<button
 						class="button is-primary"

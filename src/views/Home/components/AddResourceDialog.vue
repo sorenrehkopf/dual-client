@@ -1,5 +1,5 @@
 <template>
-	<div class="has-background-white p-3">
+	<div class="has-background-white p-3 has-text-left">
 		<div class="field">
 			<label class="label">Name</label>
 			<div class="control">
@@ -8,30 +8,42 @@
 		</div>
 
 		<div class="field">
-			<label class="label">Coords</label>
+			<label class="label">Location</label>
 			<div class="control">
-				<input class="input" readonly type="text" placeholder="Click the map!" :value="`Lat: ${store.addCoords.lat}, Lon: ${store.addCoords.lon}`">
-			</div>
-		</div>
-
-		<div class="field">
-			<label class="label">Description</label>
-			<div class="control">
-				<textarea class="textarea" type="text" placeholder="Text input" v-model="description" />
+				<span class="is-underlined" @click="showAddCoordsConfirm">
+					<i class="fa-solid fa-location-crosshairs mr-2"></i>
+					<span v-if="store.addCoords.lat" class="mr-2">
+						{{`${store.addCoords.lat.toFixed(5)}, ${store.addCoords.lon.toFixed(5)}`}}
+					</span>
+					<span v-if="store.addCoords.lat" class="is-clickable">Change</span>
+					<span v-if="!store.addCoords.lat" class="is-clickable">Choose on map</span>
+				</span>
 			</div>
 		</div>
 
 		<div class="field">
 			<label class="label">Address</label>
 			<div class="control">
-				<textarea class="textarea" type="text" placeholder="Text input" v-model="address" />
+				<input class="input" type="text" placeholder="Address" v-model="address" />
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label">Description</label>
+			<div class="control">
+				<textarea
+					class="textarea"
+					type="text"
+					placeholder="Any and all details you want to include!"
+					v-model="description"
+				/>
 			</div>
 		</div>
 
 		<div class="field is-grouped">
 			<div class="control">
 				<button
-					class="button is-primary mr-3"
+					class="button is-primary"
 					type="text"
 					@click="handleAddResource"
 				>
@@ -99,6 +111,12 @@ export default {
 					this.address = ''
 				})
 		},
+
+		showAddCoordsConfirm () {
+			store.addCoords = { lat: 0, lon: 0 }
+			store.showAddCoordsConfirm = true
+			store.showAddDialog = false
+		}
 	}
 }
 </script>

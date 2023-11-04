@@ -3,18 +3,18 @@
 
 	<ActionButtons
 		class="mapbox-standard-overlay"
-		v-if="!store.showFilters && !store.showAddDialog"
+		v-if="!store.showFilters && !store.showAddDialog && !store.showAddCoordsConfirm"
 	/>
 
 	<ResourceFilters
 		v-if="store.showFilters"
-		class="mapbox-standard-overlay"
+		class="mapbox-standard-overlay mapbox-overlay-fs"
 		:search="search"
 	/>
 
 	<AddResourceDialog
 		v-if="store.showAddDialog"
-		class="mapbox-standard-overlay has-background-white p-3"
+		class="mapbox-standard-overlay mapbox-overlay-fs has-background-white p-3"
 		:handleResourceAdd="handleResourceAdd"
 	/>
 
@@ -25,6 +25,15 @@
 		@click="search"
 	>
 		Search This Area
+	</button>
+
+	<button
+		v-if="store.showAddCoordsConfirm"
+		class="button is-primary mapbox-bottom-center-button"
+		@click="confirmAddCoords"
+		:disabled="!store.addCoords.lat"
+	>
+		Confirm
 	</button>
 </template>
 
@@ -124,6 +133,11 @@ export default {
 			this.userCoords = { lat, lon }
 		},
 
+		confirmAddCoords () {
+			store.showAddCoordsConfirm = false
+			store.showAddDialog = true
+		},
+
 		async createMap () {
 			const { userCoords: { lat, lon } } = this
 
@@ -188,13 +202,27 @@ export default {
 		position: absolute;
 		top: 5vh;
 		left: 5vw;
+		max-width: 88vw;
 	}
 
-	#area-search-button {
+	.mapbox-bottom-center-button {
 		position: absolute;
 		bottom: 5vh;
 		left: 40vw;
+	}
+
+	#area-search-button {
 		opacity: .7;
+	}
+
+	@media (max-width: 500px) {
+		.mapbox-overlay-fs {
+			width: 88vw;
+		}
+
+		.mapbox-bottom-center-button {
+			left: 30vw;
+		}
 	}
 
 </style>
