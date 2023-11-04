@@ -4,27 +4,9 @@
 			<div class="field">
 				<label class="label">Tags:</label>
 
-				<span
-					v-for="tag in store.filters.tags"
-					:key="tag"
-					class="tag mr-2"
-				>
-					{{tag}}
-					<span @click="() => deselectTag(tag)" class="p-1 ml-1 is-clickable">X</span>
-				</span>
-
-				<div class="select is-small">
-					<select @change="selectTag">
-						<option></option>
-						<option
-							v-for="tag in availableTags.sort()"
-							:value="tag"
-							:key="tag"
-						>
-							{{tag}}
-						</option>
-					</select>
-				</div>
+				<TagSelector
+					:onChange="(selectedTags) => store.filters.tags = selectedTags"
+				/>
 			</div>
 
 			<div class="field">
@@ -61,7 +43,7 @@
 				<div class="control">
 					<button
 						class="button is-primary"
-						@click="handleSearch"
+						@click="search"
 					>
 						Search
 					</button>
@@ -82,30 +64,23 @@
 
 <script>
 import { store } from '../store'
-import apolloClient from '@/apollo/client'
-import getTags from '@/apollo/queries/getTags'
-import pickBy from 'lodash/pickBy.js'
+import TagSelector from '@/components/TagSelector'
 
 export default {
 	name: 'ResourceFilters',
+
+	components: {
+		TagSelector,
+	},
+
 	props: {
 		search: Function,
 	},
 
 	data () {
 		return {
-			selectedTags: [],
-			availableTags: [],
 			store,
 		}
-	},
-
-	async mounted () {
-		const { data: { tags } } = await apolloClient.query({
-			query: getTags,
-		})
-
-		this.availableTags = tags.map(({ name }) => name)
 	},
 
 	methods: {
@@ -122,29 +97,6 @@ export default {
 
 			return `${dateFormatted}T${timeFormatted}`
 		},
-
-		selectTag ({ target: { value } }) {
-			const { tags = [] } = store.filters
-			const newTags = [...tags, value]
-
-			store.filters.tags = newTags
-			this.availableTags = this.availableTags.filter(tag => tag !== value)
-		},
-
-		deselectTag (value) {
-			const { tags } = store.filters
-
-			this.availableTags.push(value)
-			const newTags = tags.filter(tag => tag !== value)
-
-			store.filters.tags = newTags.length ? newTags : undefined
-		},
-
-		handleSearch () {
-			const { selectedTags: tags } = this
-
-			this.search({ filters: pickBy({ tags: tags.length && tags }) })
-		}
 	}
 }
 </script>

@@ -20,8 +20,8 @@
 	/>
 
 	<button
-		v-if="enableAreaSearch"
-		class="button"
+		v-if="enableAreaSearch && !store.showAddCoordsConfirm && !store.showAddDialog"
+		class="button mapbox-bottom-center-button"
 		id="area-search-button"
 		@click="search"
 	>
