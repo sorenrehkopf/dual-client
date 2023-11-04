@@ -5,7 +5,7 @@
 				<label class="label">Tags:</label>
 
 				<TagSelector
-					:onChange="(selectedTags) => store.filters.tags = selectedTags"
+					:onChange="handleTagsChange"
 				/>
 			</div>
 
@@ -97,6 +97,10 @@ export default {
 
 			return `${dateFormatted}T${timeFormatted}`
 		},
+
+		handleTagsChange (selectedTags) {
+			store.filters.tags = selectedTags.length ? selectedTags : undefined
+		}
 	}
 }
 </script>

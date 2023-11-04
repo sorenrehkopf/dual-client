@@ -66,7 +66,7 @@ export default {
 
 		deselectTag (value) {
 			this.selectedTags = this.selectedTags.filter(tag => tag !== value)
-			this.onChange(this.selectedTags.length ? this.selectedTags : undefined)
+			this.onChange(this.selectedTags)
 		},
 	}
 }

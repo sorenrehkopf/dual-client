@@ -29,6 +29,14 @@
 		</div>
 
 		<div class="field">
+			<label class="label">Tags:</label>
+
+			<TagSelector
+				:onChange="(selectedTags) => tags = selectedTags"
+			/>
+		</div>
+
+		<div class="field">
 			<label class="label">Description</label>
 			<div class="control">
 				<textarea
@@ -68,9 +76,14 @@
 import { store } from '../store'
 import { useMutation } from '@vue/apollo-composable'
 import addResourceMutation from '@/apollo/mutations/addResource'
+import TagSelector from '@/components/TagSelector'
 
 export default {
 	name: 'AddResourceDialog',
+
+	components: {
+		TagSelector
+	},
 
 	props: {
 		handleResourceAdd: Function,
@@ -82,6 +95,7 @@ export default {
 			name: '',
 			description: '',
 			address: '',
+			tags: [],
 			store,
 		}
 	},
