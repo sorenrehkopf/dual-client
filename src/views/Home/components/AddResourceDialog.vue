@@ -124,15 +124,16 @@ export default {
 						name,
 						description,
 						address,
+						tags,
 					},
 				}
 			} = this
 
-			addResource({ lat, lon, name, description, address })
+			addResource({ lat, lon, name, description, address, tags })
 				.then(({ data: { addResource } }) => {
 					handleResourceAdd(addResource)
 
-					this.store.addParams = { coords: {} }
+					this.store.addParams = { coords: {}, tags: [] }
 				})
 		},
 	}
