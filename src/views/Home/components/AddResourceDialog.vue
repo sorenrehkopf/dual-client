@@ -48,6 +48,17 @@
 		</div>
 
 		<div class="field">
+			<label class="label">Hours:</label>
+
+			<ScheduleDisplay
+				v-if="store.addParams.schedule.length"
+				:schedule="store.addParams.schedule"
+			/>
+
+			<div class="is-underlined is-clickable">Change</div>
+		</div>
+
+		<div class="field">
 			<label class="label">Description</label>
 			<div class="control">
 				<textarea
@@ -88,12 +99,14 @@ import { store } from '../store'
 import { useMutation } from '@vue/apollo-composable'
 import addResourceMutation from '@/apollo/mutations/addResource'
 import TagSelector from '@/components/TagSelector'
+import ScheduleDisplay from '@/components/ScheduleDisplay'
 
 export default {
 	name: 'AddResourceDialog',
 
 	components: {
-		TagSelector
+		TagSelector,
+		ScheduleDisplay
 	},
 
 	props: {
