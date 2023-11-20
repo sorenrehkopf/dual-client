@@ -32,7 +32,7 @@
 		v-if="store.showAddCoordsConfirm"
 		class="button is-primary mapbox-bottom-center-button"
 		@click="confirmAddCoords"
-		:disabled="!store.addCoords.lat"
+		:disabled="!store.addParams.coords.lat"
 	>
 		Confirm
 	</button>
@@ -76,7 +76,7 @@ export default {
 
 		handleResourceAdd (newResource) {
 			this.addMarker(newResource)
-			this.showAddDialog = false
+			this.store.showAddDialog = false
 		},
 
 		async search () {
@@ -130,7 +130,7 @@ export default {
 			)
 
 			this.userCoords = { lat, lon }
-			store.addCoords = { lat, lon }
+			store.addParams.coords = { lat, lon }
 		},
 
 		confirmAddCoords () {
@@ -141,7 +141,7 @@ export default {
 		},
 
 		setAddCoords () {
-			const { addCoords: { lon, lat } } = store
+			const { addParams: { coords: { lon, lat } } } = store
 
 			store.showAddCoordsConfirm = true
 			store.showAddDialog = false
@@ -169,7 +169,7 @@ export default {
 			})
 
 			this.map.on('click', ({ lngLat: { lng: lon, lat } }) => {
-				store.addCoords = { lat, lon }
+				store.addParams.coords = { lat, lon }
 				this.addCoordsMarker.setLngLat([lon, lat])
 			})
 			this.map.on('dragend', () => { this.enableAreaSearch = true })

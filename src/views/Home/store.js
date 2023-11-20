@@ -4,6 +4,12 @@ export const store = reactive({
 	showFilters: false,
 	showAddDialog: true,
 	showAddCoordsConfirm: false,
-	addCoords: { lat: 0, lon: 0 },
+	addParams: {
+		coords: { lat: 0, lon: 0 },
+		name: '',
+		description: '',
+		address: '',
+		tags: [],
+	},
 	filters: {},
 })

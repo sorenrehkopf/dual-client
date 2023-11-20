@@ -3,7 +3,12 @@
 		<div class="field">
 			<label class="label">Name</label>
 			<div class="control">
-				<input class="input" type="text" placeholder="Text input" v-model="name">
+				<input
+					class="input"
+					type="text"
+					placeholder="Text input"
+					v-model="store.addParams.name"
+				/>
 			</div>
 		</div>
 
@@ -12,11 +17,11 @@
 			<div class="control">
 				<span class="is-underlined" @click="setAddCoords">
 					<i class="fa-solid fa-location-crosshairs mr-2"></i>
-					<span v-if="store.addCoords.lat" class="mr-2">
-						{{`${store.addCoords.lat.toFixed(5)}, ${store.addCoords.lon.toFixed(5)}`}}
+					<span v-if="store.addParams.coords.lat" class="mr-2">
+						{{`${store.addParams.coords.lat.toFixed(5)}, ${store.addParams.coords.lon.toFixed(5)}`}}
 					</span>
-					<span v-if="store.addCoords.lat" class="is-clickable">Change</span>
-					<span v-if="!store.addCoords.lat" class="is-clickable">Choose on map</span>
+					<span v-if="store.addParams.coords.lat" class="is-clickable">Change</span>
+					<span v-if="!store.addParams.coords.lat" class="is-clickable">Choose on map</span>
 				</span>
 			</div>
 		</div>
@@ -24,7 +29,12 @@
 		<div class="field">
 			<label class="label">Address</label>
 			<div class="control">
-				<input class="input" type="text" placeholder="Address" v-model="address" />
+				<input
+					class="input"
+					type="text"
+					placeholder="Address"
+					v-model="store.addParams.address"
+				/>
 			</div>
 		</div>
 
@@ -32,7 +42,8 @@
 			<label class="label">Tags:</label>
 
 			<TagSelector
-				:onChange="(selectedTags) => tags = selectedTags"
+				:selectedTags="store.addParams.tags"
+				:onChange="(selectedTags) => store.addParams.tags = selectedTags"
 			/>
 		</div>
 
@@ -43,7 +54,7 @@
 					class="textarea"
 					type="text"
 					placeholder="Any and all details you want to include!"
-					v-model="description"
+					v-model="store.addParams.description"
 				/>
 			</div>
 		</div>
@@ -92,10 +103,6 @@ export default {
 
 	data () {
 		return {
-			name: '',
-			description: '',
-			address: '',
-			tags: [],
 			store,
 		}
 	},
@@ -110,20 +117,22 @@ export default {
 		async handleAddResource () {
 			const {
 				addResource,
-				name,
-				description,
-				address,
 				handleResourceAdd,
-				store: { addCoords: { lat, lon } },
+				store: {
+					addParams: {
+						coords: { lat, lon },
+						name,
+						description,
+						address,
+					},
+				}
 			} = this
 
 			addResource({ lat, lon, name, description, address })
 				.then(({ data: { addResource } }) => {
 					handleResourceAdd(addResource)
 
-					this.name = ''
-					this.description = ''
-					this.address = ''
+					this.store.addParams = { coords: {} }
 				})
 		},
 	}

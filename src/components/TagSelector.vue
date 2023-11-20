@@ -32,13 +32,13 @@ export default {
 	name: 'TagSelector',
 
 	props: {
-		onChange: Function
+		onChange: Function,
+		selectedTags: Array,
 	},
 
 	data () {
 		return {
 			availableTags: [],
-			selectedTags: [],
 		}
 	},
 
@@ -60,13 +60,15 @@ export default {
 
 	methods: {
 		selectTag (tagName) {
-			this.selectedTags.push(tagName)
-			this.onChange(this.selectedTags)
+			const newTags = [...this.selectedTags, tagName]
+
+			this.onChange(newTags)
 		},
 
 		deselectTag (value) {
-			this.selectedTags = this.selectedTags.filter(tag => tag !== value)
-			this.onChange(this.selectedTags)
+			const newTags = this.selectedTags.filter(tag => tag !== value)
+
+			this.onChange(newTags)
 		},
 	}
 }

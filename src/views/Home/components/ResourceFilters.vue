@@ -5,6 +5,7 @@
 				<label class="label">Tags:</label>
 
 				<TagSelector
+					:selectedTags="store.filters.tags || []"
 					:onChange="handleTagsChange"
 				/>
 			</div>
