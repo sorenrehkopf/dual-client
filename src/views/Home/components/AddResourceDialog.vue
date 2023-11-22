@@ -53,9 +53,9 @@
 			<ScheduleDisplay
 				v-if="store.addParams.schedule.length"
 				:schedule="store.addParams.schedule"
+				:onChange="(newSchedule) => store.addParams.schedule = newSchedule"
+				:editable="true"
 			/>
-
-			<div class="is-underlined is-clickable">Change</div>
 		</div>
 
 		<div class="field">

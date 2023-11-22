@@ -17,7 +17,7 @@
 					<input
 						class="mr-2"
 						type="datetime-local"
-						:min="getNowFormatted()"
+						:min="getDateForCalendarInput()"
 						:value="store.filters.open"
 						@change="({ target: { value } }) => store.filters.open = value"
 					/>
@@ -25,7 +25,7 @@
 					<div class="mt-2">
 						<button
 							class="button is-info is-small is-light mr-2"
-							@click="() => store.filters.open = getNowFormatted()"
+							@click="() => store.filters.open = getDateForCalendarInput()"
 						>
 							Now
 						</button>
@@ -66,6 +66,7 @@
 <script>
 import { store } from '../store'
 import TagSelector from '@/components/TagSelector'
+import { getDateForCalendarInput } from '@/utils/dateFormatters'
 
 export default {
 	name: 'ResourceFilters',
@@ -81,24 +82,11 @@ export default {
 	data () {
 		return {
 			store,
+			getDateForCalendarInput,
 		}
 	},
 
 	methods: {
-		getNowFormatted () {
-			const date = new Date()
-			const dateFormatted = [
-				date.getFullYear(),
-				date.getMonth() + 1,
-				date.getDate(),
-			].map(n => (n < 10 ? `0${n}` : n)).join('-')
-			const timeFormatted = [date.getHours(), date.getMinutes()]
-				.map(n => (n < 10 ? `0${n}` : n))
-				.join(':')
-
-			return `${dateFormatted}T${timeFormatted}`
-		},
-
 		handleTagsChange (selectedTags) {
 			store.filters.tags = selectedTags.length ? selectedTags : undefined
 		}

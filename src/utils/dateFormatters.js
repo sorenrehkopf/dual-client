@@ -4,9 +4,9 @@ export const getShortDateDisplay = date => {
 	const year = String(date.getFullYear()).substr(2)
 	const hour = date.getHours()
 	const minute = date.getMinutes()
-	const ampm = hour > 12 ? 'PM' : 'AM'
+	const timeDisplay = getShortTimeDisplay([hour, minute].join(':'))
 
-	return `${day}/${month}/${year}, ${hour % 12}:${minute} ${ampm}`
+	return `${day}/${month}/${year}, ${timeDisplay}`
 }
 
 export const getShortTimeDisplay = time => {
@@ -20,3 +20,16 @@ export const getShortTimeDisplay = time => {
 
 export const getWeekdayShortName = numericWeekday =>
 	(['Sun', 'Mon', 'Tues', 'Wedns', 'Thurs', 'Fri', 'Sat'][numericWeekday])
+
+export const getDateForCalendarInput = (date = new Date()) => {
+	const dateFormatted = [
+		date.getFullYear(),
+		date.getMonth() + 1,
+		date.getDate(),
+	].map(n => (n < 10 ? `0${n}` : n)).join('-')
+	const timeFormatted = [date.getHours(), date.getMinutes()]
+		.map(n => (n < 10 ? `0${n}` : n))
+		.join(':')
+
+	return `${dateFormatted}T${timeFormatted}`
+}
