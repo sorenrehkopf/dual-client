@@ -2,13 +2,13 @@
 	<div>
 		<div v-if="!!weeklyHours.length" class="mb-2">
 			<div v-for="hour in weeklyHours" :key="hour" class="is-size-6">
-				{{hour.weekday}} - {{hour.startTime}} - {{hour.endTime}}
+				{{getWeekdayShortName(hour.weekday)}} - {{getShortTimeDisplay(hour.startTime)}} - {{getShortTimeDisplay(hour.endTime)}}
 			</div>
 		</div>
 
 		<div v-if="!!onceHours.length">
 			<div v-for="hour in onceHours" :key="hour" class="is-size-6">
-				{{hour.start}} - {{hour.end}}
+				{{getShortDateDisplay(hour.start)}} - {{getShortDateDisplay(hour.end)}}
 			</div>
 		</div>
 
@@ -17,8 +17,10 @@
 				class="is-clickable is-underlined"
 				@click="changing = true"
 			>
-				Change
+				{{schedule.length ? 'Change' : 'Add Hours'}}
 			</span>
+
+			<!-- adding hours below -->
 
 			<div
 				v-if="changing"
@@ -29,8 +31,8 @@
 					:key="hour"
 					class="is-size-6 card p-2 mb-3 is-flex is-justify-content-space-between"
 				>
-					<span>{{hour.weekday}} - {{hour.startTime}} - {{hour.endTime}}</span>
-					<span class="icon is-clickable">
+					<span>{{getWeekdayShortName(hour.weekday)}} - {{getShortTimeDisplay(hour.startTime)}} - {{getShortTimeDisplay(hour.endTime)}}</span>
+					<span @click="removeAvailability(hour.scheduleIndex)" class="icon is-clickable">
 						<i class="fa-solid fa-trash	"></i>
 					</span>
 				</div>
@@ -40,8 +42,8 @@
 					:key="hour"
 					class="is-size-6 card p-2 mb-3 is-flex is-justify-content-space-between"
 				>
-					<span>{{hour.start}} - {{hour.end}}</span>
-					<span class="icon is-clickable">
+					<span>{{getShortDateDisplay(hour.start)}} - {{getShortDateDisplay(hour.end)}}</span>
+					<span @click="removeAvailability(hour.scheduleIndex)" class="icon is-clickable">
 						<i class="fa-solid fa-trash	"></i>
 					</span>
 				</div>
@@ -51,7 +53,10 @@
 						<p class="card-header-title">
 							<span>New:</span>
 							<span class="select is-small ml-2">
-								<select @change="({ target: { value } }) => addData.type = value">
+								<select
+									@change="({ target: { value } }) => addData.type = value"
+									:value="addData.type"
+								>
 									<option
 										v-for="type in ['weekly', 'once']"
 										:value="type"
@@ -69,7 +74,7 @@
 							<div class="field is-flex">
 								<label class="label mr-2">Day:</label>
 								<span class="select is-small">
-									<select @change="({ target: { value } }) => addData.weekday = value">
+									<select @change="({ target: { value } }) => addData.weekday = parseInt(value)">
 										<option></option>
 										<option
 											v-for="weekday in [0,1,2,3,4,5,6]"
@@ -115,8 +120,8 @@
 										class="mr-2"
 										type="datetime-local"
 										:min="getDateForCalendarInput()"
-										:value="addData.startDateTime"
-										@change="({ target: { value } }) => addData.startDateTime = value"
+										:value="addData.startDatetime"
+										@change="({ target: { value } }) => addData.startDatetime = value"
 									/>
 								</div>
 							</div>
@@ -126,11 +131,11 @@
 								<div class="control">
 									<input
 										class="mr-2"
-										:disabled="!addData.startDateTime"
+										:disabled="!addData.startDatetime"
 										type="datetime-local"
-										:min="addData.startDateTime"
-										:value="addData.endDateTime"
-										@change="({ target: { value } }) => addData.endDateTime = value"
+										:min="addData.startDatetime"
+										:value="addData.endDatetime"
+										@change="({ target: { value } }) => addData.endDatetime = value"
 									/>
 								</div>
 							</div>
@@ -138,12 +143,13 @@
 					</div>
 
 					<div class="card-footer">
-						<span
-							class="card-footer-item is-clickable has-text-link"
+						<button
+							class="card-footer-item is-clickable has-text-link button"
+							:disabled="!addDataComplete"
 							@click="handleAdd"
 						>
 							Add
-						</span>
+						</button>
 						<span
 							class="card-footer-item is-clickable has-text-link"
 							@click="addData = { type: 'weekly' }"
@@ -186,42 +192,69 @@ export default {
 
 	data () {
 		return {
-			changing: true,
+			changing: false,
 			addData: { type: 'weekly' },
 			getDateForCalendarInput,
 			getWeekdayShortName,
+			getShortTimeDisplay,
+			getShortDateDisplay,
 		}
 	},
 
 	computed: {
 		onceHours () {
 			return this.schedule
-				.filter(({ type }) => type === 'once')
-				.map(({ startDateTime, endDateTime }) => ({
-					start: getShortDateDisplay(startDateTime),
-					end: getShortDateDisplay(endDateTime),
+				.map(({ startDatetime, endDatetime, type }, scheduleIndex) => ({
+					type,
+					scheduleIndex,
+					start: startDatetime,
+					end: endDatetime,
 				}))
+				.filter(({ type }) => type === 'once')
 		},
 
 		weeklyHours () {
 			return this.schedule
+				.map(({ weekday, startTime, endTime, type }, scheduleIndex) => ({
+					type,
+					scheduleIndex,
+					weekday: weekday,
+					startTime,
+					endTime,
+				}))
 				.filter(({ type }) => type === 'weekly')
 				.sort(({ weekday: a }, { weekday: b }) => a - b)
-				.map(({ weekday, startTime, endTime }) => ({
-					weekday: getWeekdayShortName(weekday),
-					startTime: getShortTimeDisplay(startTime),
-					endTime: getShortTimeDisplay(endTime),
-				}))
 		},
+
+		addDataComplete () {
+			const {
+				addData: {
+					type,
+					startDatetime,
+					endDatetime,
+					startTime,
+					endTime,
+				}
+			} = this
+
+			return (type === 'once' && startDatetime && endDatetime) ||
+				(type === 'weekly' && startTime && endTime)
+		}
 	},
 
 	methods: {
+		removeAvailability (index) {
+			const { onChange, schedule } = this
+
+			onChange(schedule.filter((_a, i) => i !== index))
+		},
+
 		handleAdd () {
 			const { onChange, schedule } = this
 
 			if (this.addData.type === 'once') {
-				this.addData.startDateTime = new Date(this.addData.startDateTime)
-				this.addData.endDateTime = new Date(this.addData.endDateTime)
+				this.addData.startDatetime = new Date(this.addData.startDatetime)
+				this.addData.endDatetime = new Date(this.addData.endDatetime)
 			}
 
 			onChange([...schedule, this.addData])

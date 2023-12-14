@@ -51,7 +51,6 @@
 			<label class="label">Hours:</label>
 
 			<ScheduleDisplay
-				v-if="store.addParams.schedule.length"
 				:schedule="store.addParams.schedule"
 				:onChange="(newSchedule) => store.addParams.schedule = newSchedule"
 				:editable="true"
@@ -138,15 +137,16 @@ export default {
 						description,
 						address,
 						tags,
+						schedule,
 					},
 				}
 			} = this
 
-			addResource({ lat, lon, name, description, address, tags })
+			addResource({ lat, lon, name, description, address, tags, schedule })
 				.then(({ data: { addResource } }) => {
 					handleResourceAdd(addResource)
 
-					this.store.addParams = { coords: {}, tags: [] }
+					this.store.addParams = { coords: {}, tags: [], schedule: [] }
 				})
 		},
 	}
