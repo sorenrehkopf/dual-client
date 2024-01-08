@@ -2,6 +2,16 @@
   <router-view/>
 </template>
 
+<script type="text/javascript" setup>
+import { onMounted } from 'vue'
+import apolloClient from '@/apollo/client'
+import getCurrentUser from '@/apollo/queries/getCurrentUser'
+
+onMounted(async () => {
+	await apolloClient.query({ query: getCurrentUser })
+})
+</script>
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

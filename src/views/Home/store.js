@@ -7,7 +7,7 @@ endDatetime.setHours(new Date().getHours() + 2)
 
 export const store = reactive({
 	showFilters: false,
-	showAddDialog: true,
+	showAddDialog: false,
 	showAddCoordsConfirm: false,
 	addParams: {
 		coords: { lat: 0, lon: 0 },

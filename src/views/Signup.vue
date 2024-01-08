@@ -1,6 +1,6 @@
 <template>
 	<section class="section">
-		<p class="title">Signup!</p>
+		<h1 class="title">Signup!</h1>
 
 		<form
 			@submit="handleSubmit"
@@ -56,6 +56,10 @@
 				something went wrong yo!
 			</div>
 		</form>
+
+		<div class="mt-3">
+			<router-link to="login">Already have an account? Login here!</router-link>
+		</div>
 	</section>
 </template>
 
@@ -91,7 +95,7 @@ export default {
 				.then(({ data: { signup: { token } } }) => {
 					localStorage.setItem('authToken', token)
 					apolloClient.clearStore()
-					this.$router.push('Home')
+					this.$router.push('/')
 				})
 				.catch(error => {
 					this.showErrorNotification = true

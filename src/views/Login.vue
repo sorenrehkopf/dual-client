@@ -1,5 +1,7 @@
 <template>
-	<div class="container is-fluid">
+	<section class="section">
+		<h1 class="title">Login!</h1>
+
 		<form
 			@submit="handleSubmit"
 			class="container is-fluid is-flex is-justify-content-center is-flex-direction-column is-align-items-center"
@@ -40,7 +42,11 @@
 				something went wrong yo!
 			</div>
 		</form>
-	</div>
+
+		<div class="mt-3">
+			<router-link to="signup">Don't have an account yet? Signup here!</router-link>
+		</div>
+	</section>
 </template>
 
 <script type="text/javascript">
@@ -72,7 +78,7 @@ export default {
 				.then(({ data: { login: { token } } }) => {
 					localStorage.setItem('authToken', token)
 					apolloClient.clearStore()
-					this.$router.push('Home')
+					this.$router.push('/')
 				})
 				.catch(error => {
 					this.showErrorNotification = true

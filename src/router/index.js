@@ -24,7 +24,7 @@ const redirectAuthed = async (to, from, next) => {
 	} = await apolloClient.query({ query: getCurrentUser })
 
 	if (authenticated) {
-		return next('/home')
+		return next('/')
 	}
 
 	next()
@@ -40,7 +40,7 @@ const routes = [
 		path: '/account',
 		name: 'Account',
 		component: () => import(/* webpackChunkName: "account" */ '../views/Account.vue'),
-		beforeEnter: () => enforceAuth,
+		beforeEnter: enforceAuth,
 	},
 	{
 		path: '/login',
